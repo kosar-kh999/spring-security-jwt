@@ -1,6 +1,7 @@
 package com.example.springsecurityjwt.user.controller;
 
-import com.example.springsecurityjwt.user.model.User;
+import com.example.springsecurityjwt.user.dto.UserRequestDTO;
+import com.example.springsecurityjwt.user.dto.UserResponseDTO;
 import com.example.springsecurityjwt.user.record.UserRoleRecord;
 import com.example.springsecurityjwt.user.service.UserService;
 import org.springframework.data.domain.Page;
@@ -18,26 +19,26 @@ public class UserController {
     }
 
     @PostMapping(value = "/user")
-    public ResponseEntity<String> add(@RequestBody User user) {
-        String savedId = userService.save(user);
+    public ResponseEntity<String> add(@RequestBody UserRequestDTO requestDTO) {
+        String savedId = userService.save(requestDTO);
         return ResponseEntity.ok(savedId);
     }
 
     @PutMapping(value = "/user/{id}")
-    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody User user) {
-        userService.update(id, user);
+    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody UserRequestDTO requestDTO) {
+        userService.update(id, requestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<User> getById(@PathVariable String id) {
-        User responseDTO = userService.findById(id);
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable String id) {
+        UserResponseDTO responseDTO = userService.findById(id);
         return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping(value = "/user")
-    public ResponseEntity<Page<User>> getAll(@PageableDefault Pageable pageable) {
-        Page<User> page = userService.findAll(pageable);
+    public ResponseEntity<Page<UserResponseDTO>> getAll(@PageableDefault Pageable pageable) {
+        Page<UserResponseDTO> page = userService.findAll(pageable);
         return ResponseEntity.ok().body(page);
     }
 
@@ -48,14 +49,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public UserResponseDTO register(@RequestBody UserRequestDTO requestDTO) {
+        return userService.register(requestDTO);
 
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        return userService.login(user);
+    public String login(@RequestBody UserRequestDTO requestDTO) {
+        return userService.login(requestDTO);
     }
 
     @PostMapping(value = "/user/role")

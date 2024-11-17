@@ -1,6 +1,7 @@
 package com.example.springsecurityjwt.role.controller;
 
-import com.example.springsecurityjwt.role.model.Role;
+import com.example.springsecurityjwt.role.dto.RoleRequestDTO;
+import com.example.springsecurityjwt.role.dto.RoleResponseDTO;
 import com.example.springsecurityjwt.role.service.RoleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,26 +18,26 @@ public class RoleController {
     }
 
     @PostMapping(value = "/role")
-    public ResponseEntity<String> add(@RequestBody Role role) {
-        String savedId = roleService.save(role);
+    public ResponseEntity<String> add(@RequestBody RoleRequestDTO requestDTO) {
+        String savedId = roleService.save(requestDTO);
         return ResponseEntity.ok(savedId);
     }
 
     @PutMapping(value = "/role/{id}")
-    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody Role role) {
-        roleService.update(id, role);
+    public ResponseEntity<Void> update(@PathVariable String id, @RequestBody RoleRequestDTO requestDTO) {
+        roleService.update(id, requestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/role/{id}")
-    public ResponseEntity<Role> getById(@PathVariable String id) {
-        Role role = roleService.findById(id);
+    public ResponseEntity<RoleResponseDTO> getById(@PathVariable String id) {
+        RoleResponseDTO role = roleService.findById(id);
         return ResponseEntity.ok(role);
     }
 
     @GetMapping(value = "/role")
-    public ResponseEntity<Page<Role>> getAll(@PageableDefault Pageable pageable) {
-        Page<Role> page = roleService.findAll(pageable);
+    public ResponseEntity<Page<RoleResponseDTO>> getAll(@PageableDefault Pageable pageable) {
+        Page<RoleResponseDTO> page = roleService.findAll(pageable);
         return ResponseEntity.ok().body(page);
     }
 
