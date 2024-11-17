@@ -37,4 +37,11 @@ public class CustomException extends RuntimeException {
         super(messageKey);
     }
 
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+
+    public Integer getHttpStatusCode() {
+        return httpStatusCode;
+    }
 }
