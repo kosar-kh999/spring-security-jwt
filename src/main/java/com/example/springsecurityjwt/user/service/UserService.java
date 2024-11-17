@@ -1,5 +1,6 @@
 package com.example.springsecurityjwt.user.service;
 
+import com.example.springsecurityjwt.exception.CustomException;
 import com.example.springsecurityjwt.role.model.Role;
 import com.example.springsecurityjwt.role.repo.RoleRepo;
 import com.example.springsecurityjwt.security.jwt.JWTService;
@@ -45,14 +46,14 @@ public class UserService {
     public String save(UserRequestDTO requestDTO) {
         User user = userRepo.findByUsername(requestDTO.getUsername());
         if (user == null)
-            throw new RuntimeException(String.format("کاربر  %s قبلا ثبت نام کرده است.", requestDTO.getUsername()));
+            throw new CustomException(String.format("کاربر  %s قبلا ثبت نام کرده است.", requestDTO.getUsername()));
         User newUser = userMapper.toEntity(requestDTO);
         return userRepo.save(newUser).getId();
     }
 
     public UserResponseDTO findById(String id) {
         Optional<User> userOptional = userRepo.findById(id);
-        User user = userOptional.orElseThrow(() -> new RuntimeException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
+        User user = userOptional.orElseThrow(() -> new CustomException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
         return userMapper.toDTO(user);
     }
 
@@ -63,14 +64,14 @@ public class UserService {
 
     public void update(String id, UserRequestDTO requestDTO) {
         Optional<User> userOpt = userRepo.findById(id);
-        User user = userOpt.orElseThrow(() -> new RuntimeException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
+        User user = userOpt.orElseThrow(() -> new CustomException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
         userMapper.toEntity(requestDTO, user);
         userRepo.save(user);
     }
 
     public void delete(String id) {
         Optional<User> userOpt = userRepo.findById(id);
-        User user = userOpt.orElseThrow(() -> new RuntimeException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
+        User user = userOpt.orElseThrow(() -> new CustomException(String.format("اطلاعاتی با شناسه %s یافت نشد.", id)));
         userRepo.delete(user);
     }
 
@@ -85,15 +86,15 @@ public class UserService {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
         if (authentication.isAuthenticated())
             return jwtService.generateToken(requestDTO.getUsername());
-        throw new RuntimeException("اطلاعات وارد شده صحیح نمیباشد.");
+        throw new CustomException("اطلاعات وارد شده صحیح نمیباشد.");
     }
 
     public void assignRoleForUser(UserRoleRecord userRecord) {
         Optional<User> userOpt = userRepo.findById(userRecord.userId());
-        User user = userOpt.orElseThrow(() -> new RuntimeException(String.format("اطلاعاتی با شناسه %s یافت نشد.", userRecord.userId())));
+        User user = userOpt.orElseThrow(() -> new CustomException(String.format("اطلاعاتی با شناسه %s یافت نشد.", userRecord.userId())));
 
         for (String roleId : userRecord.roleIds()) {
-            Role role = roleRepo.findById(roleId).orElseThrow(() -> new RuntimeException(String.format("اطلاعاتی با شناسه %s یافت نشد.", roleId)));
+            Role role = roleRepo.findById(roleId).orElseThrow(() -> new CustomException(String.format("اطلاعاتی با شناسه %s یافت نشد.", roleId)));
             user.getRoles().add(role);
         }
         userRepo.save(user);
